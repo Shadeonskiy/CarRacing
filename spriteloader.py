@@ -14,7 +14,6 @@ class SpriteSheet():
         self.height = constants.SPRITE_H
         self.dir1 = dir1
         self.dir2 = dir2
-        print(self.width)
 
     def load_sprite_sheets(self):
         # Specifying path to the spritesheets directory
@@ -22,11 +21,15 @@ class SpriteSheet():
         # Loading every single file that is inside specified directory
         self.images = [file for file in listdir(self.path) if isfile(join(self.path, file))]
     
+    # Extracts sprites from the spritesheet to dict
     def get_sprites(self):
         self.load_sprite_sheets()
+
+        # Getting all spritesheets
         for image in self.images:
             sprite_sheet = pygame.image.load(join(self.path, image)).convert_alpha()
 
+            # Split spritesheet into single sprites
             sprites = []
             for i in range(sprite_sheet.get_width() // self.width):
                 surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA, 32)
@@ -34,7 +37,4 @@ class SpriteSheet():
                 surface.blit(sprite_sheet, (0, 0), rect)
                 sprites.append(scale_image(surface, 0.5))
 
-
             self.all_sprites[image.replace(".png", "")] = sprites
-        
-        print(self.all_sprites)
