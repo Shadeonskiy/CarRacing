@@ -8,3 +8,4 @@ Additional libraries/modules: **pygame** 🔧(Information is not up-to-date) <br
 Development team: <br />
 **1) Vladyslav Lytvynchuk (Shadeonskiy)** <br />
 **2) Nikita Shkitak (Nickiway)** <br />
+
