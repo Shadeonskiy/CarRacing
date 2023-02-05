@@ -1,3 +1,5 @@
 
 *.md
 *.pyc
+*.xml
+*.iml
