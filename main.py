@@ -60,6 +60,9 @@ if __name__ == "__main__":
             WIN.blit(cars_spritesheet.all_sprites["red_car"][6], (170, 200))
         elif rotate_left:
             WIN.blit(cars_spritesheet.all_sprites["red_car"][4], (170, 200))
+
+        for i in cars_spritesheet.all_sprites.keys():
+            print(len(cars_spritesheet.all_sprites[i]))
     
     pygame.quit()
     quit()
