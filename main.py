@@ -1,6 +1,5 @@
 import pygame
 import constants
-from utils import scale_image
 from spriteloader import SpriteSheet
 from render import ObjectRenderer
 import argparse

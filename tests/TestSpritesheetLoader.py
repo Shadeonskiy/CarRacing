@@ -28,6 +28,7 @@ class TestSpriteSheet(unittest.TestCase):
         self.assertEqual(self.spritesheet.images, images_expected_result)
 
     def test_get_sprites(self):
+        # sprites dictionary must have 5 keys and 8 sprite images for each key
         self.spritesheet.get_sprites()
         keys_amount = len(self.spritesheet.all_sprites.keys())
         values_amount = [len(self.spritesheet.all_sprites[i]) for i in self.spritesheet.all_sprites.keys()]

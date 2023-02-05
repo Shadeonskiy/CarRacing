@@ -1,9 +1,15 @@
 import pygame
+import math
 
 def get_scale_ratio(img, win):
+    if (img.get_width() > win.get_width() & img.get_height() < win.get_height()) | \
+        (img.get_height() > win.get_height() & img.get_width() < win.get_width()):
+        return min((win.get_width() / img.get_width()), (win.get_height() / img.get_height()))
+        
     return max((win.get_width() / img.get_width()), (win.get_height() / img.get_height()))
 
 def scale_image(img, scale_ratio):
+    scale_ratio = math.fabs(scale_ratio)
     new_size = round(img.get_width() * scale_ratio), round(img.get_height() * scale_ratio)
     return pygame.transform.scale(img, new_size)
 
