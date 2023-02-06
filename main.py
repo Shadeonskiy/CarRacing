@@ -3,6 +3,7 @@ import constants
 from spriteloader import SpriteSheet
 from render import ObjectRenderer
 import argparse
+from car import AbstractCar
 
 WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 pygame.display.set_caption("Car Racing Game")
