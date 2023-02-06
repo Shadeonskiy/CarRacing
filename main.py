@@ -8,6 +8,14 @@ from car import AbstractCar
 WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 pygame.display.set_caption("Car Racing Game")
 
+
+def draw(win, images, player_car):
+    for img, pos in images:
+        win.blit(img, pos)
+
+    player_car.draw(win)
+    pygame.display.update()
+    
 run = True
 clock = pygame.time.Clock()
 
@@ -38,7 +46,6 @@ if __name__ == "__main__":
     # Main game loop
     while run:
         clock.tick(constants.FPS)
-        pygame.display.update()
 
         # Testing function of changing car images when a certain key is pressed (Delete if necessary)
         keys = pygame.key.get_pressed()
