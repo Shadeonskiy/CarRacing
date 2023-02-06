@@ -19,11 +19,25 @@ class AbstractCar:
             self.angle += self.rotation_vel
         elif right:
             self.angle -= self.rotation_vel
-        
 
     def draw(self, win):
         blit_rotate_center(win, self.img, (self.x, self.y), self.angle)
 
+    def move_forward(self):
+        self.vel = min(self.vel + self.acceleration, self.max_vel)
+        self.move()
+
+    def move(self):
+        radians = math.radians(self.angle)
+        vertical = math.cos(radians) * self.vel
+        horizontal = math.sin(radians) * self.vel
+
+        self.y -= vertical
+        self.x -= horizontal
+
+    def reduce_speed(self):
+        self.vel = max(self.vel - self.acceleration / 2, 0)
+        self.move()
 
 class PlayerCar(AbstractCar):
     IMG = RED_CAR

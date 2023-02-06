@@ -16,7 +16,7 @@ def draw(win, objects, player_car):
     
 run = True
 clock = pygame.time.Clock()
-player_car = PlayerCar(4, 4)
+player_car = PlayerCar(3, 3)
 
 # Argument parser from terminal to determine car characteristics
 def init_argparser():
@@ -55,6 +55,18 @@ if __name__ == "__main__":
                 run = False
                 break
       
+        if keys[pygame.K_a]:
+            player_car.rotate(left=True)
+        if keys[pygame.K_d]:
+            player_car.rotate(right=True)
+
+        if keys[pygame.K_w]:
+            moved = True
+            player_car.move_forward()
+
+        # if moved == False:
+            # player_car.reduce_speed()
+            
         # rotate_left = False
         # rotate_right = False
         # if keys[pygame.K_a]:
