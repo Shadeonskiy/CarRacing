@@ -6,6 +6,7 @@ import constants
 from random import randint
 import time
 
+# Class to render level and images
 class ObjectRenderer():
     def __init__(self):
         self.track_index = randint(0,5)
@@ -23,7 +24,7 @@ class ObjectRenderer():
         for img, pos in IMAGES:
             scale_ratio = get_scale_ratio(img, win)
             img = scale_image(img, scale_ratio)
-
+            
             if pos == (0, 0):
                 rect = img.get_rect(center = win.get_rect().center)
                 win.blit(img, rect)
