@@ -1,13 +1,15 @@
 import pygame
 from utils import scale_image, get_scale_ratio, blit_rotate_center
+from os import listdir
+from os.path import isfile, join
 import constants
 from random import randint
 
 # Class to render level and images
 class ObjectRenderer():
-    def __init__(self):
-        self.track_index = randint(0,5)
-        self.finish_index = randint(0,1)
+    def __init__(self, track_index=0, finish_index=0):
+        self.track_index = track_index
+        self.finish_index = finish_index
         self.GRASS = pygame.image.load("images/Maps/map_tile.png")
         self.FINISH_LINE = pygame.image.load("images/Maps/finish_line.png")
         self.TRACKS = [pygame.image.load(f"images/Maps/Tracks/track_{i}.png") for i in range(1,7)]
@@ -27,10 +29,10 @@ class ObjectRenderer():
                 rect = img.get_rect(center = win.get_rect().center)
                 win.blit(img, rect)
 
-            elif pos in constants.FINISH_LINE_POS: 
-                img = scale_image(img, 0.065)
+            elif pos in constants.FINISH_LINE_POS:
+                img = scale_image(img, 0.5)
                 cropped = pygame.Surface((100, 20), pygame.SRCALPHA, 32)
-                cropped.blit(img, (0, 0), (0, 16, 200, 20))
+                cropped.blit(img, (0, 0), (0, 19, 200, 20))
                 blit_rotate_center(win, cropped, pos, constants.FINISH_LINE_ANGLES[self.track_index])
 
             else: win.blit(img, pos)
