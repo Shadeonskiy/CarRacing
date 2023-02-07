@@ -3,12 +3,20 @@ import constants
 from spriteloader import SpriteSheet
 from render import ObjectRenderer
 import argparse
+from car import PlayerCar
 
 WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 pygame.display.set_caption("Car Racing Game")
 
+
+def draw(win, objects, player_car):
+    objects.render(WIN)
+    player_car.draw(win)
+    pygame.display.update()
+    
 run = True
 clock = pygame.time.Clock()
+player_car = PlayerCar(3, 3)
 
 # Argument parser from terminal to determine car characteristics
 def init_argparser():
@@ -37,8 +45,8 @@ if __name__ == "__main__":
     # Main game loop
     while run:
         clock.tick(constants.FPS)
-        pygame.display.update()
 
+        draw(WIN, objects, player_car)
         # Testing function of changing car images when a certain key is pressed (Delete if necessary)
         keys = pygame.key.get_pressed()
 
@@ -46,28 +54,45 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 run = False
                 break
-        
-        rotate_left = False
-        rotate_right = False
+      
+        # the ability to move and rotate car using keys 
         if keys[pygame.K_a]:
-            if rotate_right:
-                rotate_right = False
-            rotate_left = True
+            player_car.rotate(left=True)
+
         if keys[pygame.K_d]:
-            if rotate_left:
-                rotate_left = False
-            rotate_right = True
+            player_car.rotate(right=True)
+
+        if keys[pygame.K_w]:
+            moved = True
+            player_car.move_forward()
+
+        if keys[pygame.K_s]:
+            moved = True
+            player_car.move_backward()
+
+        # if moved == False:
+            # player_car.reduce_speed()
+            
+        # rotate_left = False
+        # rotate_right = False
+        # if keys[pygame.K_a]:
+        #     if rotate_right:
+        #         rotate_right = False
+        #     rotate_left = True
+        # if keys[pygame.K_d]:
+        #     if rotate_left:
+        #         rotate_left = False
+        #     rotate_right = True
 
         # Draw level
-        objects.render(WIN)
 
         # Draw car according to the current state (Delete if necessary)
-        if not rotate_left | rotate_right:
-            WIN.blit(cars_spritesheet.all_sprites["red_car"][0], (170, 200))
-        elif rotate_right: 
-            WIN.blit(cars_spritesheet.all_sprites["red_car"][6], (170, 200))
-        elif rotate_left:
-            WIN.blit(cars_spritesheet.all_sprites["red_car"][4], (170, 200))
+        # if not rotate_left | rotate_right:
+        #     WIN.blit(cars_spritesheet.all_sprites["red_car"][0], (170, 200))
+        # elif rotate_right: 
+        #     WIN.blit(cars_spritesheet.all_sprites["red_car"][6], (170, 200))
+        # elif rotate_left:
+        #     WIN.blit(cars_spritesheet.all_sprites["red_car"][4], (170, 200))
 
         # cars_spritesheet.all_sprites["red_car"][0] - idle car state for testing
     pygame.quit()
