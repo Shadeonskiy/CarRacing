@@ -3,6 +3,7 @@ import math
 from utils import scale_image, blit_rotate_center
 
 RED_CAR = scale_image(pygame.image.load("images/Cars/Red Car/carRed_0.png"), 0.55)
+GREEN_CAR = scale_image(pygame.image.load("images/Cars/Green Car/carGreen_0.png"), 0.55)
 
 class Car:
     def __init__(self, max_vel, rotation_vel):
@@ -54,3 +55,21 @@ class Car:
 class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
+
+class ComputerCar(Car):
+    IMG = GREEN_CAR
+    START_POS = (150, 200)
+
+    def __init__(self, max_vel, rotation_vel, path=[]):
+        super().__init__(max_vel, rotation_vel)
+        self.path = path
+        self.current_point = 0
+        self.vel = max_vel
+
+    def draw_points(self, win):
+        for point in self.path:
+            pygame.draw.circle(win, (255, 0, 0), point, 5)
+
+    def draw(self, win):
+        super().draw(win)
+        self.draw_points(win)

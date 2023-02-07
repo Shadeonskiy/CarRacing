@@ -3,20 +3,22 @@ import constants
 from spriteloader import SpriteSheet
 from render import ObjectRenderer
 import argparse
-from car import PlayerCar
+from car import PlayerCar, ComputerCar
 
 WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 pygame.display.set_caption("Car Racing Game")
 
 
-def draw(win, objects, player_car):
-    objects.render(WIN)
+def draw(win : pygame.Surface, objects, player_car, computer_car):
+    objects.render(win)
     player_car.draw(win)
+    computer_car.draw(win)
     pygame.display.update()
     
 run = True
 clock = pygame.time.Clock()
 player_car = PlayerCar(3, 3)
+computer_car = ComputerCar(3, 3)
 
 # Argument parser from terminal to determine car characteristics
 def init_argparser():
@@ -46,7 +48,8 @@ if __name__ == "__main__":
     while run:
         clock.tick(constants.FPS)
 
-        draw(WIN, objects, player_car)
+        draw(WIN, objects, player_car, computer_car)
+        pygame.display.update()
         # Testing function of changing car images when a certain key is pressed (Delete if necessary)
         keys = pygame.key.get_pressed()
 

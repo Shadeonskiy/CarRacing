@@ -1,10 +1,7 @@
 import pygame
 from utils import scale_image, get_scale_ratio, blit_rotate_center
-from os import listdir
-from os.path import isfile, join
 import constants
 from random import randint
-import time
 
 # Class to render level and images
 class ObjectRenderer():
@@ -18,8 +15,9 @@ class ObjectRenderer():
 
     # Renders images in specified area or in the center of the screen
     def render(self, win):
-        IMAGES = [(self.GRASS, constants.STANDARD_POS), (self.TRACKS[self.track_index], constants.STANDARD_POS), 
-            (self.FINISH_LINE, constants.FINISH_LINE_POS[self.track_index]), (self.TRACK_BORDERS[self.track_index], constants.STANDARD_POS)]
+        IMAGES = [(self.GRASS, constants.STANDARD_POS), (self.TRACKS[self.track_index], constants.STANDARD_POS),
+                  (self.FINISH_LINE, constants.FINISH_LINE_POS[self.track_index]), (self.TRACK_BORDERS[self.track_index],
+                                                                              constants.STANDARD_POS)]
 
         for img, pos in IMAGES:
             scale_ratio = get_scale_ratio(img, win)
