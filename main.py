@@ -55,14 +55,20 @@ if __name__ == "__main__":
                 run = False
                 break
       
+        # the ability to move and rotate car using keys 
         if keys[pygame.K_a]:
             player_car.rotate(left=True)
+
         if keys[pygame.K_d]:
             player_car.rotate(right=True)
 
         if keys[pygame.K_w]:
             moved = True
             player_car.move_forward()
+
+        if keys[pygame.K_s]:
+            moved = True
+            player_car.move_backward()
 
         # if moved == False:
             # player_car.reduce_speed()

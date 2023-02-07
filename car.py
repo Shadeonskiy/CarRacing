@@ -4,7 +4,7 @@ from utils import scale_image, blit_rotate_center
 
 RED_CAR = scale_image(pygame.image.load("images/Cars/Red Car/carRed_0.png"), 0.55)
 
-class AbstractCar:
+class Car:
     def __init__(self, max_vel, rotation_vel):
         self.img = self.IMG
         self.max_vel = max_vel
@@ -27,6 +27,10 @@ class AbstractCar:
         self.vel = min(self.vel + self.acceleration, self.max_vel)
         self.move()
 
+    def move_backward(self):
+        self.vel = min(self.vel + self.acceleration, self.max_vel)
+        self.move_way_back()
+
     def move(self):
         radians = math.radians(self.angle)
         vertical = math.cos(radians) * self.vel
@@ -35,10 +39,18 @@ class AbstractCar:
         self.y -= vertical
         self.x -= horizontal
 
+    def move_way_back(self):
+        radians = math.radians(self.angle)
+        vertical = math.cos(radians) * self.vel
+        horizontal = math.sin(radians) * self.vel
+
+        self.y += vertical
+        self.x += horizontal
+
     def reduce_speed(self):
         self.vel = max(self.vel - self.acceleration / 2, 0)
         self.move()
 
-class PlayerCar(AbstractCar):
+class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
