@@ -80,3 +80,40 @@ class ComputerCar(Car):
     def draw(self, win):
         super().draw(win)
         self.draw_points(win)
+    
+    def move(self):
+        # check this to ensure that we won't get an index error when trying to move towards the point that doesn't exist
+        if self.current_point >= len(self.path):
+            return
+
+        self.calculate_angle()
+        self.update_path_point()
+        super().move()
+
+    def calculate_angle(self):
+        target_x, target_y = self.path[self.current_point]
+        x_diff = target_x - self.x
+        y_diff = target_y - self.y
+
+        if y_diff == 0:
+            radian_angle = math.pi/2
+        else:
+            radian_angle = math.atan(x_diff/y_diff)
+        
+        if target_y > self.y:
+            radian_angle += math.pi
+
+        difference_in_angle = self.angle - math.degrees(radian_angle)
+        if difference_in_angle >= 180:
+            difference_in_angle -= 360
+        
+        if difference_in_angle > 0:
+            self.angle -= min(self.rotation_vel, abs(difference_in_angle))
+        else:
+            self.angle += min(self.rotation_vel, abs(difference_in_angle))
+    
+    def update_path_point(self):
+        target = self.path[self.current_point]
+        rect = pygame.Rect(self.x, self.y, self.img.get_width(), self.img.get_height())
+        if rect.collidepoint(*target):
+            self.current_point += 1

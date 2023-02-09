@@ -21,7 +21,7 @@ def draw(win : pygame.Surface, objects, player_car, computer_car):
 run = True
 clock = pygame.time.Clock()
 player_car = PlayerCar(3, 3, track_index)
-computer_car = ComputerCar(3, 3, constants.COMPUTER_CAR_PATHS[track_index], track_index)
+computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
 
 def init_argparser():
     """
@@ -71,7 +71,7 @@ if __name__ == "__main__":
                 run = False
                 break
             
-            # get_current_points()
+            get_current_points()
             
         # the ability to move and rotate car using keys 
         if keys[pygame.K_a]:
@@ -87,8 +87,10 @@ if __name__ == "__main__":
         if keys[pygame.K_s]:
             moved = True
             player_car.move_backward()
+        
+        computer_car.move()
 
-    # print(computer_car.path)
+    print(computer_car.path)
 
     pygame.quit()
     quit()
