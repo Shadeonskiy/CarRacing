@@ -30,8 +30,8 @@ class Car:
         self.move()
 
     def move_backward(self):
-        self.vel = min(self.vel + self.acceleration, self.max_vel)
-        self.move_way_back()
+        self.vel = max(self.vel - self.acceleration, -self.max_vel/2)
+        self.move()
 
     def move(self):
         radians = math.radians(self.angle)
@@ -40,14 +40,6 @@ class Car:
 
         self.y -= vertical
         self.x -= horizontal
-
-    def move_way_back(self):
-        radians = math.radians(self.angle)
-        vertical = math.cos(radians) * self.vel
-        horizontal = math.sin(radians) * self.vel
-
-        self.y += vertical
-        self.x += horizontal
 
     def reduce_speed(self):
         self.vel = max(self.vel - self.acceleration / 2, 0)

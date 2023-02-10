@@ -6,92 +6,110 @@ import argparse
 from car import PlayerCar, ComputerCar
 from random import randint
 
-WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
-pygame.display.set_caption("Car Racing Game")
-
+clock = pygame.time.Clock()
 track_index = randint(0,5)
 finish_index = randint(0,1)
 
-def draw(win : pygame.Surface, objects, player_car, computer_car):
-    objects.render(win)
-    player_car.draw(win)
-    computer_car.draw(win)
-    pygame.display.update()
+class Game():
 
-run = True
-clock = pygame.time.Clock()
-player_car = PlayerCar(3, 3, track_index)
-computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
+    def __init__(self):
+        self.play = False
+        self.init_argparser()
+        # Init object renderer, that draws all the necessary images, except the car (Delete if necessary)
+        self.object_renderer = ObjectRenderer(track_index, finish_index)
 
-def init_argparser():
-    """
-    Argument parser from terminal to determine car characteristics. Parse arguments when passing arguments in command line (cmd)
-    """
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mv', '--max_velocity', default=4, type=int, choices=range(1, 11), help="set max velocity for player car")
-    parser.add_argument('--rv', '--rotation_velocity', default=4, type=int, choices=range(1, 6), help="set rotation velocity for player car")
-    parser.add_argument('--cc', '--car_color', default="red", choices=["blue","red","green","yellow","purple"], help="choose player car color")
-    args = parser.parse_args(['--mv', '4', '--rv', '2','--cc', 'yellow'])
-    return args
+        # Init cars
+        self.player_car = PlayerCar(self.args.mv, self.args.rv, track_index)
+        self.computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
 
-def get_current_points():
-    """
-    Get the (x, y) position of the mouse after clicking in the specified area of the screen
-    """
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        pos = pygame.mouse.get_pos()
-        computer_car.path.append(pos)
+        # Init object, that stores car states (images of different states) (Delete if necessary)
+        self.spritesheet_loader = SpriteSheet("Cars", "Sprites")
 
-if __name__ == "__main__":
-    # Display car characteristics on the console after parsing them from the terminal 
-    # (Afterwards will be passed to the car object)
-    args = init_argparser()
-    print(f'Player Car Characteristics\n'
-          f'max velocity: {args.mv} px/s\n'
-          f'rotation velocity: {args.rv} px/s\n'
-          f'color: {args.cc}\n')
+    def init_argparser(self):
+        """
+        Argument parser from terminal to determine car characteristics. Parse arguments when passing arguments in command line (cmd)
+        """
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--mv', '--max_velocity', default=4, type=int, choices=range(1, 11), help="set max velocity for player car")
+        parser.add_argument('--rv', '--rotation_velocity', default=4, type=int, choices=range(1, 6), help="set rotation velocity for player car")
+        parser.add_argument('--cc', '--car_color', default="red", choices=["blue","red","green","yellow","purple"], help="choose player car color")
+        self.args = parser.parse_args(['--mv', '4', '--rv', '4','--cc', 'yellow'])
 
-    # Init object, that stores car states (images of different states) (Delete if necessary)
-    cars_spritesheet = SpriteSheet("Cars", "Sprites")
-    cars_spritesheet.get_sprites()
-    # Init object renderer, that draws all the necessary images, except the car (Delete if necessary)
-    objects = ObjectRenderer(track_index, finish_index)
+    def display_car_characteristics(self):
+        """
+        Display car characteristics on the console after parsing them from the terminal 
+        (Afterwards will be passed to the car object)
+        """
+        print(f'Player Car Characteristics\n'
+            f'max velocity: {self.args.mv} px/s\n'
+            f'rotation velocity: {self.args.rv} px/s\n'
+            f'color: {self.args.cc}\n')
 
-    # Main game loop
-    while run:
-        clock.tick(constants.FPS)
+    def run(self):
+        """
+        Starts the game loop
+        """
+        play = True
+        
+        self.WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
+        pygame.display.set_caption("Car Racing Game")
+        self.display_car_characteristics()
 
-        draw(WIN, objects, player_car, computer_car)
-        pygame.display.update()
-        # Testing function of changing car images when a certain key is pressed (Delete if necessary)
+        while play:
+            clock.tick(constants.FPS)
+
+            self.draw_objects()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    play = False
+                    break
+            
+            self.move_player()
+            self.computer_car.move()
+            # self.get_pressed_points()
+
+    def move_player(self):
+        """
+        Tracks the keys pressed by the user and then moves the player's car
+        """
         keys = pygame.key.get_pressed()
+        moved = False
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-                break
-            
-            get_current_points()
-            
-        # the ability to move and rotate car using keys 
         if keys[pygame.K_a]:
-            player_car.rotate(left=True)
-
+            self.player_car.rotate(left=True)
         if keys[pygame.K_d]:
-            player_car.rotate(right=True)
-
+            self.player_car.rotate(right=True)
         if keys[pygame.K_w]:
             moved = True
-            player_car.move_forward()
-
+            self.player_car.move_forward()
         if keys[pygame.K_s]:
             moved = True
-            player_car.move_backward()
-        
-        computer_car.move()
+            self.player_car.move_backward()
 
-    print(computer_car.path)
+        if not moved:
+            self.player_car.reduce_speed()
+    
+    def draw_objects(self):
+        """
+        Draw all objects on the screen (render level)
+        """ 
+        self.object_renderer.render(self.WIN)
+        self.player_car.draw(self.WIN)
+        self.computer_car.draw(self.WIN)
+        pygame.display.update()
+    
+    def get_pressed_points(self):
+        """
+        Get the (x, y) position of the mouse after clicking in the specified area of the screen
+        """
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            pos = pygame.mouse.get_pos()
+            self.computer_car.path.append(pos)
 
+if __name__ == "__main__":
+    game = Game()
+    game.run()
     pygame.quit()
     quit()
 
