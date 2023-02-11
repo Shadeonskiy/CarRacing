@@ -45,8 +45,19 @@ class ObjectRenderer():
 
     def get_border_mask(self, win):
         """
-        Return track border mask (Rect without transparent pixels)
+        Returns track border mask (Rect without transparent pixels)
         """
         track_border = self.scale_win_size(self.TRACK_BORDERS[self.track_index], win)
         TRACK_BORDER_MASK = pygame.mask.from_surface(track_border)
         return TRACK_BORDER_MASK, constants.STANDARD_POS
+    
+    def get_finish_mask(self, win):
+        """
+        Returns finish line mask
+        """
+        finish_line = scale_image(self.scale_win_size(self.FINISH_LINE, win), 0.5)
+        cropped = pygame.Surface((100, 20), pygame.SRCALPHA, 32)
+        cropped.blit(finish_line, (0, 0), (0, 19, 200, 20))
+        finish_line, pos = blit_rotate_center(win, cropped, constants.FINISH_LINE_POS[self.track_index], constants.FINISH_LINE_ANGLES[self.track_index])
+        FINISH_MASK = pygame.mask.from_surface(finish_line)
+        return FINISH_MASK, pos

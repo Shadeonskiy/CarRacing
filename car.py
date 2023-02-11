@@ -76,10 +76,8 @@ class Car:
     
     def reset(self):
         self.x, self.y = self.START_POS
-        self.angle = 0
+        self.angle = constants.FINISH_LINE_ANGLES[self.track_index]
         self.vel = 0
-
-
         
 class PlayerCar(Car):
     IMG = RED_CAR
@@ -93,6 +91,7 @@ class PlayerCar(Car):
         self.sprite_count = 1
         self.animation_left = False
         self.animation_right = False
+        self.track_index = track_index
 
     def draw(self, win):
         """
@@ -133,6 +132,10 @@ class PlayerCar(Car):
         self.vel = -self.vel / 2
         self.move()
 
+    def next_level(self):
+        self.START_POS = constants.PLAYER_CAR_START_POS[self.track_index]
+        self.reset()
+
 class ComputerCar(Car):
     IMG = GREEN_CAR
     START_POS = (150, 200)
@@ -146,6 +149,7 @@ class ComputerCar(Car):
         self.vel = max_vel
         self.car_sprites = car_sprites
         self.sprite_count = 1
+        self.track_index = track_index
 
         # set animation left/right
         self.animation_left = False
@@ -243,3 +247,16 @@ class ComputerCar(Car):
         rect = pygame.Rect(self.x, self.y, self.img.get_width(), self.img.get_height())
         if rect.collidepoint(*target):
             self.current_point += 1
+
+    def reset(self):
+        super().reset()
+        self.current_point = 0
+        self.vel = self.max_vel
+    
+    def next_level(self, level):
+        self.START_POS = constants.COMPUTER_CAR_START_POS[self.track_index]
+        self.reset()
+        self.vel = self.max_vel + (level - 1) * 0.2
+        self.rotation_vel = self.rotation_vel + (level - 1) * 0.2
+        self.current_point = 0
+        self.path = constants.COMPUTER_CAR_PATHS[self.track_index]

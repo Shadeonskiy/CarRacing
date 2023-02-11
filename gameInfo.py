@@ -2,6 +2,7 @@ import pygame
 import math
 import constants
 import time 
+from random import randint
 
 class GameInfo:
     LEVELS = 10
@@ -17,6 +18,7 @@ class GameInfo:
         """
         self.level += 1
         self.started = False
+        return randint(0, 5)
 
     def reset(self):
         """
