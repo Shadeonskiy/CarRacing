@@ -18,7 +18,7 @@ pygame.font.init()
 class Game():
 
     def __init__(self):
-        self.play = False
+        self.running = False
         self.init_argparser()
         self.WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
         self.MAIN_FONT = pygame.font.SysFont("comicsans", 24)
@@ -61,12 +61,12 @@ class Game():
         """
         Starts the game loop
         """
-        play = True
+        self.running = True
         
         pygame.display.set_caption("Car Racing Game")
         self.display_car_characteristics()
 
-        while play:
+        while self.running:
             clock.tick(constants.FPS)
             self.draw_objects()
             
@@ -84,7 +84,7 @@ class Game():
 
             for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        play = False
+                        self.running = False
                         break
 
             self.move_player()
@@ -109,6 +109,7 @@ class Game():
         if keys[pygame.K_w]:
             moved = True
             self.player_car.move_forward()
+
         if keys[pygame.K_s]:
             moved = True
             self.player_car.move_backward()
@@ -137,9 +138,6 @@ class Game():
         self.player_car.draw(self.WIN)
         self.computer_car.draw(self.WIN)
         pygame.display.update()
-        
-        
-        
     
     def get_pressed_points(self):
         """

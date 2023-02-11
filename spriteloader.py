@@ -16,13 +16,18 @@ class SpriteSheet():
         self.dir2 = dir2
 
     def load_sprite_sheets(self):
+        """
+        Loads every single file that is inside specified directory
+        """
         # Specifying path to the spritesheets directory
         self.path = join("images", self.dir1, self.dir2)
         # Loading every single file that is inside specified directory
         self.images = [file for file in listdir(self.path) if isfile(join(self.path, file))]
     
-    # Extracts sprites from the spritesheet to dict
     def get_sprites(self):
+        """
+        Extracts sprites from the spritesheet to dict
+        """
         self.load_sprite_sheets()
 
         # Getting all spritesheets
