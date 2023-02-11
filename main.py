@@ -26,7 +26,7 @@ class Game():
 
         # Init cars
         self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, track_index)
-        self.computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
+        self.computer_car = ComputerCar(3, 4, self.car_sprites, constants.COMPUTER_CAR_PATHS[track_index], track_index)
 
 
     def init_argparser(self):
