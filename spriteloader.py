@@ -38,3 +38,6 @@ class SpriteSheet():
                 sprites.append(scale_image(surface, 0.5))
 
             self.all_sprites[image.replace(".png", "")] = sprites
+
+        return self.all_sprites
+        

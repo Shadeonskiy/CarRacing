@@ -1,12 +1,14 @@
 import pygame
 import math
 import constants
-from utils import scale_image, blit_rotate_center
+from utils import scale_image, blit_rotate_center, blit_text_center
 
 RED_CAR = scale_image(pygame.image.load("images/Cars/Red Car/carRed_0.png"), 0.55)
 GREEN_CAR = scale_image(pygame.image.load("images/Cars/Green Car/carGreen_0.png"), 0.55)
 
 class Car:
+    ANIMATION_DELAY = 5
+
     def __init__(self, max_vel, rotation_vel):
         self.img = self.IMG
         self.max_vel = max_vel
@@ -15,6 +17,7 @@ class Car:
         self.angle = 0
         self.x, self.y = self.START_POS
         self.acceleration = 0.1
+
 
     def rotate(self, left=False, right=False):
         if left:
@@ -45,31 +48,74 @@ class Car:
         self.vel = max(self.vel - self.acceleration / 2, 0)
         self.move()
 
+
+        
 class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
-    def __init__(self, max_vel, rotation_vel, track_index=1, finish_index=0):
+
+    def __init__(self, max_vel, rotation_vel, car_sprites, track_index=1, finish_index=0):
         self.START_POS = constants.PLAYER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
+        self.car_sprites = car_sprites
+        self.sprite_count = 1
+        self.animation_left = False
+        self.animation_right = False
+
+    def draw(self, win):
+        self.update_sprite()
+        return super().draw(win)
+
+    def update_sprite(self):
+        step = 1
+        start_point = 0
+        self.img = self.car_sprites["red_car"][0]
+
+        if self.animation_left and self.vel != 0:
+            step = 2
+            start_point = 4
+
+        elif self.animation_right and self.vel != 0:
+            step = 2
+            start_point = 6
+
+        elif self.vel != 0: 
+            step = 3
+            start_point = 1
+
+        sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
+        self.img = self.car_sprites["red_car"][sprite_index]
+        self.sprite_count += 1
+
+        # updating the left/right params for animation
+        self.animation_left = False
+        self.animation_right = False
 
 class ComputerCar(Car):
     IMG = GREEN_CAR
     START_POS = (150, 200)
 
-    def __init__(self, max_vel, rotation_vel, path = [], track_index=1, finish_index=0):
+    def __init__(self, max_vel, rotation_vel, car_sprites, path = [], track_index=1, finish_index=0):
         self.START_POS = constants.COMPUTER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
         self.path = path
         self.current_point = 0
         self.vel = max_vel
+        self.car_sprites = car_sprites
+        self.sprite_count = 1
+
+        # set animation left/right
+        self.animation_left = False
+        self.animation_right = False
 
     def draw_points(self, win):
         for point in self.path:
             pygame.draw.circle(win, (255, 0, 0), point, 5)
 
     def draw(self, win):
+        self.update_sprite()
         super().draw(win)
         self.draw_points(win)
     
@@ -89,11 +135,14 @@ class ComputerCar(Car):
 
         if y_diff == 0:
             radian_angle = math.pi/2
+
         else:
             radian_angle = math.atan(x_diff/y_diff)
-        
+            self.animation_right = True
+
         if target_y > self.y:
             radian_angle += math.pi
+            self.animation_left = True
 
         difference_in_angle = self.angle - math.degrees(radian_angle)
         if difference_in_angle >= 180:
@@ -101,9 +150,37 @@ class ComputerCar(Car):
         
         if difference_in_angle > 0:
             self.angle -= min(self.rotation_vel, abs(difference_in_angle))
+            
         else:
             self.angle += min(self.rotation_vel, abs(difference_in_angle))
+
+
     
+    def update_sprite(self):
+        step = 1
+        start_point = 0
+
+        if self.animation_left:
+            step = 2
+            start_point = 4
+
+        elif self.animation_right:
+            step = 2
+            start_point = 6
+
+        elif self.current_point < len(self.path):
+            start_point = 1
+            step = 3
+
+        sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
+        self.img = self.car_sprites["green_car"][sprite_index]
+        self.sprite_count += 1
+
+        # updating the left/right params
+        self.animation_left = False
+        self.animation_right = False
+
+
     def update_path_point(self):
         target = self.path[self.current_point]
         rect = pygame.Rect(self.x, self.y, self.img.get_width(), self.img.get_height())
