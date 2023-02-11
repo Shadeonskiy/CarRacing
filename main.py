@@ -65,17 +65,28 @@ class Game():
         
         pygame.display.set_caption("Car Racing Game")
         self.display_car_characteristics()
-        self.game_info.start_level()
 
         while play:
             clock.tick(constants.FPS)
             self.draw_objects()
+            
+            while not self.game_info.started:
+                blit_text_center(
+                self.WIN, self.MAIN_FONT, f"Press any key to start level {self.game_info.level}!")
+                pygame.display.update()
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        break
+        
+                    if event.type == pygame.KEYDOWN:
+                        self.game_info.start_level()
 
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    play = False
-                    break
-            
+                    if event.type == pygame.QUIT:
+                        play = False
+                        break
+
             self.move_player()
             self.computer_car.move()
             # self.get_pressed_points()
