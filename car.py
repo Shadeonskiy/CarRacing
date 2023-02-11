@@ -7,6 +7,8 @@ RED_CAR = scale_image(pygame.image.load("images/Cars/Red Car/carRed_0.png"), 0.5
 GREEN_CAR = scale_image(pygame.image.load("images/Cars/Green Car/carGreen_0.png"), 0.55)
 
 class Car:
+    ANIMATION_DELAY = 5
+
     def __init__(self, max_vel, rotation_vel):
         self.img = self.IMG
         self.max_vel = max_vel
@@ -15,6 +17,7 @@ class Car:
         self.angle = 0
         self.x, self.y = self.START_POS
         self.acceleration = 0.1
+
 
     def rotate(self, left=False, right=False):
         if left:
@@ -45,19 +48,42 @@ class Car:
         self.vel = max(self.vel - self.acceleration / 2, 0)
         self.move()
 
+
+        
 class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
-    def __init__(self, max_vel, rotation_vel, track_index=1, finish_index=0):
+
+    def __init__(self, max_vel, rotation_vel, car_sprites, track_index=1, finish_index=0):
         self.START_POS = constants.PLAYER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
+        self.car_sprites = car_sprites
+        self.sprite_count = 1
+
+    def draw(self, win):
+        self.update_sprite()
+        return super().draw(win)
+
+    def update_sprite(self):
+        step = 1
+        start_point = 0
+        self.img = self.car_sprites["red_car"][0]
+
+        if self.vel != 0: 
+            step = 3
+            start_point = 1
+
+        sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
+        self.img = self.car_sprites["red_car"][sprite_index]
+        self.sprite_count += 1
+
 
 class ComputerCar(Car):
     IMG = GREEN_CAR
     START_POS = (150, 200)
 
-    def __init__(self, max_vel, rotation_vel, path = [], track_index=1, finish_index=0):
+    def __init__(self, max_vel, rotation_vel,  path = [], track_index=1, finish_index=0):
         self.START_POS = constants.COMPUTER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]

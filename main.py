@@ -15,15 +15,19 @@ class Game():
     def __init__(self):
         self.play = False
         self.init_argparser()
+        self.WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
+
         # Init object renderer, that draws all the necessary images, except the car (Delete if necessary)
         self.object_renderer = ObjectRenderer(track_index, finish_index)
 
-        # Init cars
-        self.player_car = PlayerCar(self.args.mv, self.args.rv, track_index)
-        self.computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
-
         # Init object, that stores car states (images of different states) (Delete if necessary)
         self.spritesheet_loader = SpriteSheet("Cars", "Sprites")
+        self.car_sprites = self.spritesheet_loader.get_sprites()
+
+        # Init cars
+        self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, track_index)
+        self.computer_car = ComputerCar(3, 4, constants.COMPUTER_CAR_PATHS[track_index], track_index)
+
 
     def init_argparser(self):
         """
@@ -51,7 +55,6 @@ class Game():
         """
         play = True
         
-        self.WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
         pygame.display.set_caption("Car Racing Game")
         self.display_car_characteristics()
 
@@ -78,8 +81,10 @@ class Game():
 
         if keys[pygame.K_a]:
             self.player_car.rotate(left=True)
+
         if keys[pygame.K_d]:
             self.player_car.rotate(right=True)
+            
         if keys[pygame.K_w]:
             moved = True
             self.player_car.move_forward()
@@ -114,4 +119,3 @@ if __name__ == "__main__":
     quit()
 
         
-    
