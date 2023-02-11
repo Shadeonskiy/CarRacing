@@ -73,6 +73,11 @@ class Car:
         offset = (int(self.x - x), int(self.y - y))
         POI = mask.overlap(car_mask, offset)
         return POI
+    
+    def reset(self):
+        self.x, self.y = self.START_POS
+        self.angle = 0
+        self.vel = 0
 
 
         
@@ -123,6 +128,10 @@ class PlayerCar(Car):
         # updating the left/right params for animation
         self.animation_left = False
         self.animation_right = False
+
+    def bounce(self):
+        self.vel = -self.vel / 2
+        self.move()
 
 class ComputerCar(Car):
     IMG = GREEN_CAR

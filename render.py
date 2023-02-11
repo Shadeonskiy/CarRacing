@@ -15,6 +15,10 @@ class ObjectRenderer():
         self.TRACKS = [pygame.image.load(f"images/Maps/Tracks/track_{i}.png") for i in range(1,7)]
         self.TRACK_BORDERS = [pygame.image.load(f"images/Maps/Borders/trackBorder_{i}.png") for i in range(1,7)]
 
+    def scale_win_size(self, img, win):
+        scale_ratio = get_scale_ratio(img, win)
+        return scale_image(img, scale_ratio)
+
     def render(self, win):
         """
         Renders images in specified area or in the center of the screen
@@ -25,8 +29,7 @@ class ObjectRenderer():
                 (self.TRACK_BORDERS[self.track_index], constants.STANDARD_POS)]
 
         for img, pos in IMAGES:
-            scale_ratio = get_scale_ratio(img, win)
-            img = scale_image(img, scale_ratio)
+            img = self.scale_win_size(img, win)
             
             if pos == (0, 0):
                 rect = img.get_rect(center = win.get_rect().center)
@@ -40,9 +43,10 @@ class ObjectRenderer():
 
             else: win.blit(img, pos)
 
-    def get_border_mask(self):
+    def get_border_mask(self, win):
         """
         Return track border mask (Rect without transparent pixels)
         """
-        TRACK_BORDER_MASK = pygame.mask.from_surface(self.TRACK_BORDERS[self.track_index])
+        track_border = self.scale_win_size(self.TRACK_BORDERS[self.track_index], win)
+        TRACK_BORDER_MASK = pygame.mask.from_surface(track_border)
         return TRACK_BORDER_MASK, constants.STANDARD_POS

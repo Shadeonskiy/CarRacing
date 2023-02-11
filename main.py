@@ -89,6 +89,7 @@ class Game():
 
             self.move_player()
             self.computer_car.move()
+            self.handle_collision()
             # self.get_pressed_points()
 
     def move_player(self):
@@ -117,6 +118,11 @@ class Game():
         if not moved:
             self.player_car.reduce_speed()
     
+    def handle_collision(self):
+        TRACK_BORDER_MASK, POS = self.object_renderer.get_border_mask(self.WIN)
+        if self.player_car.collide(TRACK_BORDER_MASK, *POS) != None:
+            self.player_car.bounce()
+        
     def draw_objects(self):
         """
         Draw all objects on the screen (render level)
