@@ -60,6 +60,8 @@ class PlayerCar(Car):
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
         self.car_sprites = car_sprites
         self.sprite_count = 1
+        self.animation_left = False
+        self.animation_right = False
 
     def draw(self, win):
         self.update_sprite()
@@ -70,7 +72,15 @@ class PlayerCar(Car):
         start_point = 0
         self.img = self.car_sprites["red_car"][0]
 
-        if self.vel != 0: 
+        if self.animation_left and self.vel != 0:
+            step = 2
+            start_point = 4
+
+        elif self.animation_right and self.vel != 0:
+            step = 2
+            start_point = 6
+
+        elif self.vel != 0: 
             step = 3
             start_point = 1
 
@@ -78,6 +88,9 @@ class PlayerCar(Car):
         self.img = self.car_sprites["red_car"][sprite_index]
         self.sprite_count += 1
 
+        # updating the left/right params for animation
+        self.animation_left = False
+        self.animation_right = False
 
 class ComputerCar(Car):
     IMG = GREEN_CAR

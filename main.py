@@ -81,9 +81,11 @@ class Game():
 
         if keys[pygame.K_a]:
             self.player_car.rotate(left=True)
+            self.player_car.animation_left = True
 
         if keys[pygame.K_d]:
             self.player_car.rotate(right=True)
+            self.player_car.animation_right = True
             
         if keys[pygame.K_w]:
             moved = True
