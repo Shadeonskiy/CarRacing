@@ -37,6 +37,9 @@ class Game():
         # Init game Info
         self.game_info = GameInfo()
 
+        # Menu
+        self.menu = False
+
     def init_argparser(self):
         """
         Argument parser from terminal to determine car characteristics. Parse arguments when passing arguments in command line (cmd)
@@ -88,6 +91,20 @@ class Game():
                     if event.type == pygame.KEYDOWN:
                         self.game_info.start_level()
 
+
+            while self.menu :
+                blit_text_center(
+                self.WIN, self.MAIN_FONT, f"The game has been paused {self.game_info.level}!")
+                pygame.display.update()
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        break
+        
+                    if event.type == pygame.KEYDOWN:
+                        self.menu = False
+                        
             self.move_player()
             self.computer_car.move()
             self.handle_collision()
@@ -115,6 +132,9 @@ class Game():
         if keys[pygame.K_s]:
             moved = True
             self.player_car.move_backward()
+
+        if keys[pygame.K_ESCAPE]:
+            self.menu = True
 
         if not moved:
             self.player_car.reduce_speed()
