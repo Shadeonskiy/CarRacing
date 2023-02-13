@@ -1,4 +1,5 @@
 import pygame 
+import constants 
 
 class Button():
     def __init__(self, x, y, image, scale):
@@ -27,3 +28,9 @@ class Button():
         surface.blit(self.image, (self.rect.x, self.rect.y))
 
         return action
+
+def createButtonImage(link):
+    return pygame.image.load(link).convert_alpha()
+
+def createButton(button_image, delta):
+    return Button(constants.WIDTH / 2 - button_image.get_width() / 2, constants.HEIGHT / 2 - button_image.get_height() / 2 + delta, button_image, 1)
