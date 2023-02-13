@@ -7,6 +7,7 @@ from car import PlayerCar, ComputerCar
 from random import randint
 from gameInfo import GameInfo
 from utils import blit_text_center
+import button
 
 clock = pygame.time.Clock()
 track_index = randint(0,5)
@@ -39,6 +40,15 @@ class Game():
 
         # Menu
         self.menu = False
+
+        # resume button
+        self.resume_img = pygame.image.load("images/Buttons/button_resume.png").convert_alpha()
+        self.resume_button = button.Button(constants.WIDTH / 2 - self.resume_img.get_width() / 2, constants.HEIGHT / 2 - self.resume_img.get_height() / 2, self.resume_img, 1)
+
+        # quit button 
+        self.quit_img = pygame.image.load("images/Buttons/button_quit.png").convert_alpha()
+        self.quit_button = button.Button(constants.WIDTH / 2 - self.quit_img.get_width() / 2, constants.HEIGHT / 2 - self.quit_img.get_height() / 2 + 100, self.quit_img, 1)
+
 
     def init_argparser(self):
         """
@@ -80,9 +90,8 @@ class Game():
             self.draw_objects()
 
             while not self.game_info.started:
-                blit_text_center(
-                self.WIN, self.MAIN_FONT, f"Press any key to start level {self.game_info.level}!")
-                pygame.display.update()
+                
+
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -93,8 +102,12 @@ class Game():
 
 
             while self.menu :
-                blit_text_center(
-                self.WIN, self.MAIN_FONT, f"The game has been paused {self.game_info.level}!")
+                if self.resume_button.draw(self.WIN) :
+                    self.menu = False
+
+                if self.quit_button.draw(self.WIN) :
+                        self.running = False
+                    
                 pygame.display.update()
 
                 for event in pygame.event.get():
@@ -104,7 +117,7 @@ class Game():
         
                     if event.type == pygame.KEYDOWN:
                         self.menu = False
-                        
+
             self.move_player()
             self.computer_car.move()
             self.handle_collision()
@@ -133,7 +146,7 @@ class Game():
             moved = True
             self.player_car.move_backward()
 
-        if keys[pygame.K_ESCAPE]:
+        if keys[pygame.K_SPACE]:
             self.menu = True
 
         if not moved:
