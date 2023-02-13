@@ -111,14 +111,18 @@ class Game():
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    pygame.quit()
                     break
-
+    
+                if event.type == pygame.KEYDOWN:
+                    self.menu = False
+                    
             self.draw_objects()
 
             while not self.game_info.started:
-                
-
+                blit_text_center(
+                self.WIN, self.MAIN_FONT, f"Press any key to start level {self.game_info.level}!")
+                pygame.display.update()
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
@@ -131,40 +135,33 @@ class Game():
             while self.menu :
                 
                 self.WIN.fill((52, 78, 91))
-
-
+                
                 if self.menu_state == 'main' :
-                    print('main')
                     if self.resume_button.draw(self.WIN) :
                         self.menu = False
 
                     if self.choose_car_button.draw(self.WIN) :
                         self.menu_state = 'car'
 
-                    # if self.quit_button.draw(self.WIN) :
-                    #         self.running = False
+                    if self.quit_button.draw(self.WIN) :
+                            self.running = False
 
                 # sub menu car menu 
                 if self.menu_state == 'car':
-                    print('car')
                     if self.back_button.draw(self.WIN):
                         self.menu_state = 'main'
 
                     if self.color_button_red.draw(self.WIN):
                         self.player_car.current_sprite = 'red_car'
-                        self.menu_state = 'main'
 
                     if self.color_button_purple.draw(self.WIN):
                         self.player_car.current_sprite = 'purple_car'
-                        self.menu_state = 'main'
                         
                     if self.color_button_yellow.draw(self.WIN):
                         self.player_car.current_sprite = 'yellow_car'
-                        self.menu_state = 'main'
 
                     if self.color_button_blue.draw(self.WIN):
                         self.player_car.current_sprite = 'blue_car'
-                        self.menu_state = 'main'
                     
                 pygame.display.update()
 
