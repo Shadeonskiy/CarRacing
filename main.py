@@ -32,7 +32,8 @@ class Game():
         self.car_sprites = self.spritesheet_loader.get_sprites()
 
         # Init cars
-        self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, track_index)
+        self.current_sprite = "purple_car"
+        self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, self.current_sprite, track_index)
         self.computer_car = ComputerCar(3, 4, self.car_sprites, constants.COMPUTER_CAR_PATHS[track_index], track_index)
 
         # Init game Info
@@ -57,7 +58,7 @@ class Game():
         
         # back button car menu 
         self.back_img = button.createButtonImage("images/Buttons/button_back.png") 
-        self.back_button = button.createButton(self.quit_img, 200)
+        self.back_button = button.createButton(self.back_img, 200)
 
         # car color buttons 
         # red
@@ -133,28 +134,37 @@ class Game():
 
 
                 if self.menu_state == 'main' :
+                    print('main')
                     if self.resume_button.draw(self.WIN) :
                         self.menu = False
 
                     if self.choose_car_button.draw(self.WIN) :
                         self.menu_state = 'car'
 
-                    if self.quit_button.draw(self.WIN) :
-                            self.running = False
+                    # if self.quit_button.draw(self.WIN) :
+                    #         self.running = False
 
                 # sub menu car menu 
                 if self.menu_state == 'car':
+                    print('car')
                     if self.back_button.draw(self.WIN):
                         self.menu_state = 'main'
 
                     if self.color_button_red.draw(self.WIN):
-                        pass
+                        self.player_car.current_sprite = 'red_car'
+                        self.menu_state = 'main'
+
                     if self.color_button_purple.draw(self.WIN):
-                        pass
+                        self.player_car.current_sprite = 'purple_car'
+                        self.menu_state = 'main'
+                        
                     if self.color_button_yellow.draw(self.WIN):
-                        pass
+                        self.player_car.current_sprite = 'yellow_car'
+                        self.menu_state = 'main'
+
                     if self.color_button_blue.draw(self.WIN):
-                        pass
+                        self.player_car.current_sprite = 'blue_car'
+                        self.menu_state = 'main'
                     
                 pygame.display.update()
 
