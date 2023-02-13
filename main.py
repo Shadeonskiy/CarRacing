@@ -18,7 +18,7 @@ pygame.font.init()
 class Game():
 
     def __init__(self):
-        self.play = False
+        self.running = False
         self.init_argparser()
         self.WIN = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
         self.MAIN_FONT = pygame.font.SysFont("comicsans", 24)
@@ -61,15 +61,21 @@ class Game():
         """
         Starts the game loop
         """
-        play = True
+        self.running = True
         
         pygame.display.set_caption("Car Racing Game")
         self.display_car_characteristics()
 
-        while play:
+        while self.running:
             clock.tick(constants.FPS)
-            self.draw_objects()
             
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+                    break
+
+            self.draw_objects()
+
             while not self.game_info.started:
                 blit_text_center(
                 self.WIN, self.MAIN_FONT, f"Press any key to start level {self.game_info.level}!")
@@ -82,13 +88,9 @@ class Game():
                     if event.type == pygame.KEYDOWN:
                         self.game_info.start_level()
 
-            for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        play = False
-                        break
-
             self.move_player()
             self.computer_car.move()
+            self.handle_collision()
             # self.get_pressed_points()
 
     def move_player(self):
@@ -109,6 +111,7 @@ class Game():
         if keys[pygame.K_w]:
             moved = True
             self.player_car.move_forward()
+
         if keys[pygame.K_s]:
             moved = True
             self.player_car.move_backward()
@@ -116,6 +119,33 @@ class Game():
         if not moved:
             self.player_car.reduce_speed()
     
+    def handle_collision(self):
+        TRACK_BORDER_MASK, TRACK_POS = self.object_renderer.get_border_mask(self.WIN)
+        if self.player_car.collide(TRACK_BORDER_MASK, *TRACK_POS) != None:
+            self.player_car.bounce()
+        
+        FINISH_MASK, FINISH_POS = self.object_renderer.get_finish_mask(self.WIN)
+        player_finish_poi = self.player_car.collide(FINISH_MASK, *FINISH_POS)
+        if player_finish_poi != None:
+            if player_finish_poi[1] == 0:
+                self.player_car.bounce()
+            else:
+                new_track_index = self.game_info.next_level()
+                self.object_renderer.track_index = new_track_index
+                self.player_car.track_index = new_track_index
+                self.computer_car.track_index = new_track_index
+                self.player_car.next_level()
+                self.computer_car.next_level(self.game_info.level)
+
+        computer_finish_poi = self.computer_car.collide(FINISH_MASK, *FINISH_POS)
+        if computer_finish_poi != None:
+            blit_text_center(self.WIN, self.MAIN_FONT, "You lost!")
+            pygame.display.update()
+            pygame.time.wait(5000)
+            self.game_info.reset()
+            self.player_car.reset()
+            self.computer_car.reset()
+
     def draw_objects(self):
         """
         Draw all objects on the screen (render level)
@@ -137,9 +167,6 @@ class Game():
         self.player_car.draw(self.WIN)
         self.computer_car.draw(self.WIN)
         pygame.display.update()
-        
-        
-        
     
     def get_pressed_points(self):
         """

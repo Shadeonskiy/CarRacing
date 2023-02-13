@@ -9,6 +9,9 @@ def get_scale_ratio(img, win):
     return max((win.get_width() / img.get_width()), (win.get_height() / img.get_height()))
 
 def scale_image(img, scale_ratio):
+    """
+    Scales the image by the specified scale ratio
+    """
     scale_ratio = math.fabs(scale_ratio)
     new_size = round(img.get_width() * scale_ratio), round(img.get_height() * scale_ratio)
     return pygame.transform.scale(img, new_size)
@@ -22,9 +25,13 @@ def blit_rotate_center(win, img, top_left, angle):
     new_rect = rotated_image.get_rect(center = img.get_rect(topleft=top_left).center)
     
     win.blit(rotated_image, new_rect.topleft)
+    return rotated_image, new_rect.topleft
 
 
 def blit_text_center(win, font, text):
+    """
+    Display text in the center of the screen
+    """
     render = font.render(text, 1, (200, 200, 200))
     win.blit(render, (win.get_width()/2 - render.get_width() /
                       2, win.get_height()/2 - render.get_height()/2))
