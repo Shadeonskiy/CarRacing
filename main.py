@@ -7,6 +7,7 @@ from car import PlayerCar, ComputerCar
 from random import randint
 from gameInfo import GameInfo
 from utils import blit_text_center
+import button
 
 clock = pygame.time.Clock()
 track_index = randint(0,5)
@@ -31,12 +32,51 @@ class Game():
         self.car_sprites = self.spritesheet_loader.get_sprites()
 
         # Init cars
-        self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, track_index)
+        self.current_sprite = "purple_car"
+        self.player_car = PlayerCar(self.args.mv, self.args.rv, self.car_sprites, self.current_sprite, track_index)
         self.computer_car = ComputerCar(3, 4, self.car_sprites, constants.COMPUTER_CAR_PATHS[track_index], track_index)
 
         # Init game Info
         self.game_info = GameInfo()
 
+        # Menu vars
+        self.menu = False
+        self.car_menu = False
+        self.menu_state = 'main'
+
+        # resume button
+        self.resume_img = button.createButtonImage("images/Buttons/button_resume.png")
+        self.resume_button = button.createButton(self.resume_img, -100)
+
+        # choose car button 
+        self.choose_car_img = button.createButtonImage("images/Buttons/choose_car.png") 
+        self.choose_car_button = button.createButton(self.choose_car_img, 0)
+
+        # quit button 
+        self.quit_img = button.createButtonImage("images/Buttons/button_quit.png")  
+        self.quit_button = button.createButton(self.quit_img, 100)
+        
+        # back button car menu 
+        self.back_img = button.createButtonImage("images/Buttons/button_back.png") 
+        self.back_button = button.createButton(self.back_img, 200)
+
+        # car color buttons 
+        # red
+        self.red_car_img = button.createButtonImage("images/Buttons/Color buttons/red_btn.png")
+        self.color_button_red =  button.createButton(self.red_car_img, 100) 
+        
+        # blu
+        self.blue_car_img = button.createButtonImage("images/Buttons/Color buttons/blue_btn.png")
+        self.color_button_blue =  button.createButton(self.blue_car_img, 0)
+
+        # purple
+        self.purple_car_img = button.createButtonImage("images/Buttons/Color buttons/purple_btn.png")
+        self.color_button_purple =  button.createButton(self.purple_car_img, -100)
+        
+        # yellow
+        self.yellow_car_img = button.createButtonImage("images/Buttons/Color buttons/yellow_btn.png")
+        self.color_button_yellow =  button.createButton(self.yellow_car_img, -200)
+       
     def init_argparser(self):
         """
         Argument parser from terminal to determine car characteristics. Parse arguments when passing arguments in command line (cmd)
@@ -71,9 +111,12 @@ class Game():
             
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    self.running = False
+                    pygame.quit()
                     break
-
+    
+                if event.type == pygame.KEYDOWN:
+                    self.menu = False
+                    
             self.draw_objects()
 
             while not self.game_info.started:
@@ -87,6 +130,49 @@ class Game():
         
                     if event.type == pygame.KEYDOWN:
                         self.game_info.start_level()
+
+
+            while self.menu :
+                
+                self.WIN.fill((52, 78, 91))
+                
+                if self.menu_state == 'main' :
+                    if self.resume_button.draw(self.WIN) :
+                        self.menu = False
+
+                    if self.choose_car_button.draw(self.WIN) :
+                        self.menu_state = 'car'
+
+                    if self.quit_button.draw(self.WIN) :
+                            self.running = False
+
+                # sub menu car menu 
+                if self.menu_state == 'car':
+                    if self.back_button.draw(self.WIN):
+                        self.menu_state = 'main'
+
+                    if self.color_button_red.draw(self.WIN):
+                        self.player_car.current_sprite = 'red_car'
+
+                    if self.color_button_purple.draw(self.WIN):
+                        self.player_car.current_sprite = 'purple_car'
+                        
+                    if self.color_button_yellow.draw(self.WIN):
+                        self.player_car.current_sprite = 'yellow_car'
+
+                    if self.color_button_blue.draw(self.WIN):
+                        self.player_car.current_sprite = 'blue_car'
+                    
+                pygame.display.update()
+
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        break
+        
+                    if event.type == pygame.KEYDOWN:
+                        self.menu = False
 
             self.move_player()
             self.computer_car.move()
@@ -115,6 +201,9 @@ class Game():
         if keys[pygame.K_s]:
             moved = True
             self.player_car.move_backward()
+
+        if keys[pygame.K_ESCAPE]:
+            self.menu = True
 
         if not moved:
             self.player_car.reduce_speed()

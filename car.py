@@ -83,13 +83,14 @@ class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
 
-    def __init__(self, max_vel, rotation_vel, car_sprites, track_index=1, finish_index=0):
+    def __init__(self, max_vel, rotation_vel, car_sprites, current_sprite, track_index=1, finish_index=0):
         self.START_POS = constants.PLAYER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
         self.car_sprites = car_sprites
         self.sprite_count = 1
         self.animation_left = False
+        self.current_sprite = current_sprite
         self.animation_right = False
         self.track_index = track_index
 
@@ -106,7 +107,7 @@ class PlayerCar(Car):
         """
         step = 1
         start_point = 0
-        self.img = self.car_sprites["red_car"][0]
+        self.img = self.car_sprites[self.current_sprite][0]
 
         if self.animation_left and self.vel != 0:
             step = 2
@@ -121,7 +122,7 @@ class PlayerCar(Car):
             start_point = 1
 
         sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
-        self.img = self.car_sprites["red_car"][sprite_index]
+        self.img = self.car_sprites[self.current_sprite][sprite_index]
         self.sprite_count += 1
 
         # updating the left/right params for animation
