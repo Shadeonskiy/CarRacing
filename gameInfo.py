@@ -1,8 +1,6 @@
-import pygame
-import math
-import constants
-import time 
+import time
 from random import randint
+
 
 class GameInfo:
     LEVELS = 10
