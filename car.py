@@ -91,8 +91,8 @@ class PlayerCar(Car):
     IMG = RED_CAR
     START_POS = (180, 200)
 
-    def __init__(self, max_vel, rotation_vel, car_sprites,
-                 current_sprite, track_index=1, finish_index=0):
+    def __init__(self, max_vel, rotation_vel, car_sprites=None,
+                 current_sprite=None, track_index=1, finish_index=0):
         self.START_POS = constants.PLAYER_CAR_START_POS[track_index]
         super().__init__(max_vel, rotation_vel)
         self.angle = constants.FINISH_LINE_ANGLES[track_index]
