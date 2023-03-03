@@ -36,5 +36,5 @@ def blit_text_center(win, font, text):
     Display text in the center of the screen
     """
     render = font.render(text, 1, (200, 200, 200))
-    win.blit(render, (win.get_width()/2 - render.get_width()/2,
-                      win.get_height()/2 - render.get_height()/2))
+    win.blit(render, (win.get_width() / 2 - render.get_width() / 2,
+                      win.get_height() / 2 - render.get_height() / 2))

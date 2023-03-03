@@ -50,7 +50,7 @@ class Car:
         Changes car velocity when it's moves backwards and then
         moves it by (x, y) coordinates
         """
-        self.vel = max(self.vel - self.acceleration, -self.max_vel/2)
+        self.vel = max(self.vel - self.acceleration, -self.max_vel / 2)
         self.move()
 
     def move(self):
@@ -204,10 +204,10 @@ class ComputerCar(Car):
         y_diff = target_y - self.y
 
         if y_diff == 0:
-            radian_angle = math.pi/2
+            radian_angle = math.pi / 2
 
         else:
-            radian_angle = math.atan(x_diff/y_diff)
+            radian_angle = math.atan(x_diff / y_diff)
             self.animation_right = True
 
         if target_y > self.y:
