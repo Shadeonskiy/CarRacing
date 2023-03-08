@@ -29,9 +29,9 @@ def border_imgs():
 
 
 @pytest.mark.parametrize("spritesheet, expected_path, expected_images",
-                         [("car_imgs", "images\\Cars\\Sprites",
+                         [("car_imgs", os.path.join("images", "Cars", "Sprites"),
                            ['red_car.png', 'purple_car.png', 'yellow_car.png', 'green_car.png', 'blue_car.png']),
-                          ("border_imgs", "images\\Maps\\Borders",
+                          ("border_imgs", os.path.join("images", "Maps", "Borders"),
                            ['trackBorder_1.png', 'trackBorder_2.png', 'trackBorder_3.png', 'trackBorder_4.png', 'trackBorder_5.png', 'trackBorder_6.png'])])
 def test_load_sprite_sheets(spritesheet, expected_path, expected_images, request):
     spritesheet = request.getfixturevalue(spritesheet)
