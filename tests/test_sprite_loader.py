@@ -12,20 +12,12 @@ from spriteloader import SpriteSheet
 
 @pytest.fixture
 def car_imgs():
-    spritesheet = SpriteSheet("Cars", "Sprites")
-    spritesheet.width = constants.SPRITE_W
-    spritesheet.height = constants.SPRITE_H
-
-    return spritesheet
+    return SpriteSheet("Cars", "Sprites")
 
 
 @pytest.fixture
 def border_imgs():
-    spritesheet = SpriteSheet("Maps", "Borders")
-    spritesheet.width = constants.SPRITE_W
-    spritesheet.height = constants.SPRITE_H
-
-    return spritesheet
+    return SpriteSheet("Maps", "Borders")
 
 
 @pytest.mark.parametrize("spritesheet, expected_path, expected_images",
@@ -38,3 +30,12 @@ def test_load_sprite_sheets(spritesheet, expected_path, expected_images, request
     spritesheet.load_sprite_sheets()
     assert spritesheet.path == expected_path
     assert set(spritesheet.images) == set(expected_images)
+
+
+@pytest.mark.parametrize("spritesheet, dir1, dir2", [("car_imgs", "Cars", "Sprites"), ("border_imgs", "Maps", "Borders")])
+def test_spritesheet_init(spritesheet, dir1, dir2, request):
+    spritesheet = request.getfixturevalue(spritesheet)
+    assert spritesheet.width == constants.SPRITE_W
+    assert spritesheet.height == constants.SPRITE_H
+    assert spritesheet.dir1 == dir1
+    assert spritesheet.dir2 == dir2
