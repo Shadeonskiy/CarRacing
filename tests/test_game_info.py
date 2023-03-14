@@ -48,7 +48,7 @@ class TestEvents:
 
     @pytest.mark.parametrize(["level", "expected_outcome"],
                              [(11, True),
-                              (10, False), 
+                              (10, False),
                               (13, True)])
     def test_game_finished(self, gameInfo, level, expected_outcome):
         gameInfo.level = level
