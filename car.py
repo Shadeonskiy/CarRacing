@@ -102,6 +102,7 @@ class PlayerCar(Car):
         self.current_sprite = current_sprite
         self.animation_right = False
         self.track_index = track_index
+        self.sprite_index = 0
 
     def draw(self, win):
         """
@@ -116,7 +117,7 @@ class PlayerCar(Car):
         """
         step = 1
         start_point = 0
-        self.img = self.car_sprites[self.current_sprite][0]
+        self.img = self.car_sprites[int(self.current_sprite)][0]
 
         if self.animation_left and self.vel != 0:
             step = 2
@@ -130,8 +131,8 @@ class PlayerCar(Car):
             step = 3
             start_point = 1
 
-        sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
-        self.img = self.car_sprites[self.current_sprite][sprite_index]
+        self.sprite_index = (self.sprite_count // self.ANIMATION_DELAY) % step + start_point
+        self.img = self.car_sprites[self.current_sprite][self.sprite_index]
         self.sprite_count += 1
 
         # updating the left/right params for animation
